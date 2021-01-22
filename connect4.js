@@ -5,100 +5,164 @@
  * board fills (tie)
  */
 
-var WIDTH = 7;
-var HEIGHT = 6;
+let WIDTH = 7; 
+let HEIGHT = 6;
 
-var currPlayer = 1; // active player: 1 or 2
-var board = []; // array of rows, each row is array of cells  (board[y][x])
+
+let currPlayer = 'Red'; // active player: 1 or 2
+let board = []; // array of rows, each row is array of cells  (board[y][x])
 
 /** makeBoard: create in-JS board structure:
  *    board = array of rows, each row is array of cells  (board[y][x])
  */
 
-function makeBoard() {
+const makeBoard = () => {
+  for(let y =0; y<HEIGHT; y++){
+    board.push(Array.from({length: WIDTH}))
+  }
   // TODO: set "board" to empty HEIGHT x WIDTH matrix array
 }
 
 /** makeHtmlBoard: make HTML table and row of column tops. */
 
-function makeHtmlBoard() {
+const makeHtmlBoard = () => {
   // TODO: get "htmlBoard" variable from the item in HTML w/ID of "board"
+  const board = document.querySelector('#board');
 
   // TODO: add comment for this code
-  var top = document.createElement("tr");
+
+  // Create top line that can be selected to drop a piece
+  let top = document.createElement("tr");
+  // Give top row an id of column-top
   top.setAttribute("id", "column-top");
+  // add a click listener that links to a callback function to drop piece when clicked
   top.addEventListener("click", handleClick);
 
-  for (var x = 0; x < WIDTH; x++) {
-    var headCell = document.createElement("td");
+  // Take the number that WIDTH is set to and create a header row with that many cells
+  // WIDTH = number of cells
+  for (let x = 0; x < WIDTH; x++) {
+    // Create each cell for header row and give that cell an ID of x (column number). Then append the row to the top tr created
+    let headCell = document.createElement("td");
     headCell.setAttribute("id", x);
     top.append(headCell);
   }
-  htmlBoard.append(top);
+  // after top is created append top to board
+  board.append(top);
 
   // TODO: add comment for this code
-  for (var y = 0; y < HEIGHT; y++) {
+  // loop through to create a number of rows based on what HEIGHT is set to
+  // number of rows = HEIGHT
+  // have each iteration through to create a row and then the WIDTH number of cells in each row
+  for (let y = 0; y < HEIGHT; y++) {
+    // create rows with variable row
     const row = document.createElement("tr");
-    for (var x = 0; x < WIDTH; x++) {
+    // for every row create  a number of cells determined by WIDTH number
+    for (let x = 0; x < WIDTH; x++) {
+      // create table cell with a variable of cell
       const cell = document.createElement("td");
+      // give each cell a unique id for later access id ='row # - column #' then append the cell into row
       cell.setAttribute("id", `${y}-${x}`);
       row.append(cell);
     }
-    htmlBoard.append(row);
+    // at the end of each loop append the row to the board
+    board.append(row);
   }
 }
 
 /** findSpotForCol: given column x, return top empty y (null if filled) */
 
-function findSpotForCol(x) {
+const findSpotForCol = x => {
   // TODO: write the real version of this, rather than always returning 0
-  return 0;
+    // start at bottom of column x that is selected and loop through entire column moving up to find highest empty spot
+    // if spot is empty return the y(row) at that cell, else return null
+  for(let y = HEIGHT-1; y>=0; y--){
+    // if the cell at board (y,x) is falsy return the y so piece can be placed here
+    if(!board[y][x]){
+      return y;
+    }
+    
+  }
+  // if the cell is truthy return null to function to loop through next y
+  return null;
 }
 
 /** placeInTable: update DOM to place piece into HTML table of board */
 
-function placeInTable(y, x) {
+const placeInTable = (y, x) => {
   // TODO: make a div and insert into correct table cell
+  // create div called piece with class name of basic piece and another class name for current player
+  let piece = document.createElement('div');
+  piece.classList.add('piece');
+  piece.classList.add(`player${currPlayer}`);
+  // find id of spot with variables that are input in to the function
+  let spot = document.getElementById(`${y}-${x}`)
+  // add piece to spot to add game piece created into desired location
+  spot.append(piece);
+
 }
 
 /** endGame: announce game end */
+// TODO: pop up alert message
+  // insert msg from below into an alert message for game being finalized
+const endGame = msg => alert(msg);
 
-function endGame(msg) {
-  // TODO: pop up alert message
-}
 
 /** handleClick: handle click of column top to play piece */
 
-function handleClick(evt) {
+const handleClick = evt => {
   // get x from ID of clicked cell
-  var x = +evt.target.id;
+  // find column (variable x) that is clicked by using e.target.id
+  // assigned x for continuity
+  let x = +evt.target.id;
 
   // get next spot in column (if none, ignore click)
-  var y = findSpotForCol(x);
+  // use find spot function to assign y so you have (y,x) for current spot
+  let y = findSpotForCol(x);
   if (y === null) {
     return;
   }
 
   // place piece in board and add to HTML table
   // TODO: add line to update in-memory board
+  // set spot found to current player
+  board[y][x] = currPlayer
   placeInTable(y, x);
 
   // check for win
+  // if check for win returns true then return winning message else do nothing
   if (checkForWin()) {
-    return endGame(`Player ${currPlayer} won!`);
+    // added timeout so board is filled before winning message appears
+    setTimeout(()=>{
+      // since timeout will delay player will switch so revert back to previous player for message
+      currPlayer = currPlayer === 'Red' ? 'Blue' : 'Red';
+      return endGame(`${currPlayer} player won!`);
+    },250)
+    
+    
   }
 
   // check for tie
   // TODO: check if all cells in board are filled; if so call, call endGame
+  // check board to see if all cells on all rows are filled return endgame function with msg of a tie
+  const checkForTie = () => {
+    board.every(row => row.every(cell => cell))
+  }
+  if (checkForTie()){
+    return endGame('Tie Game! GAME OVER!')
+  }
+  
 
   // switch players
+  // set currPlayer to red or blue
+  // if current player is red then return blue else return red
+  currPlayer = currPlayer === 'Red' ? 'Blue' : 'Red';
   // TODO: switch currPlayer 1 <-> 2
 }
 
 /** checkForWin: check board cell-by-cell for "does a win start here?" */
 
-function checkForWin() {
-  function _win(cells) {
+const checkForWin =() => {
+  const _win = (cells) => {
     // Check four cells to see if they're all color of current player
     //  - cells: list of four (y, x) cells
     //  - returns true if all are legal coordinates & all match currPlayer
@@ -114,13 +178,19 @@ function checkForWin() {
   }
 
   // TODO: read and understand this code. Add comments to help you.
-
-  for (var y = 0; y < HEIGHT; y++) {
-    for (var x = 0; x < WIDTH; x++) {
-      var horiz = [[y, x], [y, x + 1], [y, x + 2], [y, x + 3]];
-      var vert = [[y, x], [y + 1, x], [y + 2, x], [y + 3, x]];
-      var diagDR = [[y, x], [y + 1, x + 1], [y + 2, x + 2], [y + 3, x + 3]];
-      var diagDL = [[y, x], [y + 1, x - 1], [y + 2, x - 2], [y + 3, x - 3]];
+// loop through all rows and insid each row iteration loop through all columns
+// start loop for rows
+  for (let y = 0; y < HEIGHT; y++) {
+    // immediatelly loop through each column in the row
+    for (let x = 0; x < WIDTH; x++) {
+      // increase x +1 four times to find horizontal adjacent column spots for current y
+      let horiz = [[y, x], [y, x + 1], [y, x + 2], [y, x + 3]];
+      // increase y +1 four times to find vertical adjacent row spots for current x
+      let vert = [[y, x], [y + 1, x], [y + 2, x], [y + 3, x]];
+      // check current (y,x) and increase both by one, three times, to move diagnolly down and to the right on board
+      let diagDR = [[y, x], [y + 1, x + 1], [y + 2, x + 2], [y + 3, x + 3]];
+      // check current (y,x) and increase y by one and decrease x by 1, three times, to move diagnolly down and left board
+      let diagDL = [[y, x], [y + 1, x - 1], [y + 2, x - 2], [y + 3, x - 3]];
 
       if (_win(horiz) || _win(vert) || _win(diagDR) || _win(diagDL)) {
         return true;
