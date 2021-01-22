@@ -8,6 +8,49 @@ h1{
   color: white;
   text-align: center;
 }
+#game-size {
+  margin: auto;
+  height: 90vh;
+  width: 80vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: -10%;
+}
+#game-size button{
+  background-color: black;
+  color: white;
+  font-size: 32px;
+  margin: 15px;
+  padding: 10px;
+  border: white solid 3px;
+  border-radius: 10px;
+}
+#game-size button:hover{
+  background-color: blue;
+  cursor: pointer;
+}
+
+#new-game-div{
+  display: flex;
+  justify-content: center;
+  margin: 10px;
+}
+#new-game{
+  background-color: blue;
+  color: white;
+  font-weight: 600;
+  border: 2px solid white;
+  border-radius: 5px;
+  padding: 5px 8px;
+  opacity: .8;
+  display: none;
+}
+#new-game:hover{
+  opacity: 1;
+  cursor: pointer;
+}
 
 
 /* game board table */
@@ -28,6 +71,19 @@ h1{
 
 /* pieces are div within game table cells: draw as colored circles */
 
+/* animation */
+@keyframes drop {
+  from{
+    transform: translateY(-1000px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+.fall{
+  animation-name: drop;
+  animation-duration: 500ms;
+}
 .piece {
   /* TODO: make into circles */
   border: solid black 2px;
@@ -35,6 +91,8 @@ h1{
   margin: 5px;
   width: 80%;
   height: 80%;
+  position: relative;
+  animation-name: drop;
 } 
 
 /* TODO: make pieces red/blue,  depending on player 1/2 piece */
@@ -42,8 +100,8 @@ h1{
   background-color: rgb(230, 27, 27);
 }
 
-.playerBlue{
-  background-color: rgb(115, 115, 238);
+.playerYellow{
+  background-color: yellow;
 }
 
 
@@ -57,4 +115,7 @@ h1{
 
 #column-top td:hover {
   background-color: gold;
+  cursor: pointer;
 }
+
+

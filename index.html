@@ -1,15 +1,26 @@
 <!doctype html>
+
 <head>
   <title>Connect 4</title>
   <link href="connect4.css" rel="stylesheet">
 </head>
+
 <body>
   <h1>Connect Four</h1>
-<div id="game">
-  <table id="board"></table>
-</div>
+  <div id="new-game-div">
+    <button id="new-game">NEW GAME</button>
+  </div>
+  <div id="game-size">
+    <button id="small">SMALL GAME <br> 5x6 </button>
+    <button id="medium">NORMAL GAME<br> 7x8 </button>
+    <button id="large">LARGE GAME <br> 9x10 </button>
+  </div>
+  <div id="game">
+    <table id="board"></table>
+  </div>
 
-<script src="connect4.js"></script>
+  <script src="connect4.js"></script>
 
 </body>
-</html> 
+
+</html>
