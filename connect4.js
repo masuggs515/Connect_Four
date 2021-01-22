@@ -4,9 +4,45 @@
  * column until a player gets four-in-a-row (horiz, vert, or diag) or until
  * board fills (tie)
  */
+const small = document.querySelector('#small');
+const medium = document.querySelector('#medium');
+const large = document.querySelector('#large');
+const newGame = document.querySelector('#new-game');
+let WIDTH;
+let HEIGHT
 
-let WIDTH = 7; 
-let HEIGHT = 6;
+// Go back to start screen if in the middle of the game and allow to change size board
+newGame.addEventListener('click', ()=> location.reload())
+
+// ability to choose size of game before it starts then remove choices and populate board into DOM
+
+small.addEventListener('click', (e)=>{
+  WIDTH = 6;
+  HEIGHT = 5;
+  makeBoard();
+makeHtmlBoard();
+newGame.style.display = 'block'
+e.target.parentElement.style.display ='none';
+})
+medium.addEventListener('click', (e)=>{
+  WIDTH = 8;
+  HEIGHT = 7;
+  makeBoard();
+makeHtmlBoard();
+newGame.style.display = 'block'
+e.target.parentElement.style.display ='none';
+})
+large.addEventListener('click', (e)=>{
+  WIDTH = 10;
+  HEIGHT = 9;
+  makeBoard();
+makeHtmlBoard();
+newGame.style.display = 'block'
+e.target.parentElement.style.display ='none';
+})
+
+
+
 
 
 let currPlayer = 'Red'; // active player: 1 or 2
@@ -94,6 +130,7 @@ const placeInTable = (y, x) => {
   let piece = document.createElement('div');
   piece.classList.add('piece');
   piece.classList.add(`player${currPlayer}`);
+  piece.classList.add('fall')
   // find id of spot with variables that are input in to the function
   let spot = document.getElementById(`${y}-${x}`)
   // add piece to spot to add game piece created into desired location
@@ -134,9 +171,9 @@ const handleClick = evt => {
     // added timeout so board is filled before winning message appears
     setTimeout(()=>{
       // since timeout will delay player will switch so revert back to previous player for message
-      currPlayer = currPlayer === 'Red' ? 'Blue' : 'Red';
+      currPlayer = currPlayer === 'Red' ? 'Yellow' : 'Red';
       return endGame(`${currPlayer} player won!`);
-    },250)
+    },10)
     
     
   }
@@ -153,9 +190,9 @@ const handleClick = evt => {
   
 
   // switch players
-  // set currPlayer to red or blue
-  // if current player is red then return blue else return red
-  currPlayer = currPlayer === 'Red' ? 'Blue' : 'Red';
+  // set currPlayer to red or Yellow
+  // if current player is red then return Yellow else return red
+  currPlayer = currPlayer === 'Red' ? 'Yellow' : 'Red';
   // TODO: switch currPlayer 1 <-> 2
 }
 
@@ -199,5 +236,3 @@ const checkForWin =() => {
   }
 }
 
-makeBoard();
-makeHtmlBoard();
