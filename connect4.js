@@ -4,48 +4,92 @@
  * column until a player gets four-in-a-row (horiz, vert, or diag) or until
  * board fills (tie)
  */
+
+// global variables 
 const small = document.querySelector('#small');
 const medium = document.querySelector('#medium');
 const large = document.querySelector('#large');
+const gameSize = document.querySelector('#game-size');
 const newGame = document.querySelector('#new-game');
+const coin = document.querySelector('#coin');
+const coinContain = document.querySelector('#coin-container');
+// initialize width and height so it can be changed with selections
 let WIDTH;
 let HEIGHT
 
 // Go back to start screen if in the middle of the game and allow to change size board
-newGame.addEventListener('click', ()=> location.reload())
+newGame.addEventListener('click', () => location.reload())
+
+// flip a coin to choose who starts
+let currPlayer; // active player: 1 or 2 (I used red and yellow)
+const flipCoin = () => {
+  coin.classList.add('flip');
+  coin.innerText = '';
+  // give 50/50 chance to be yellow or red
+  if (Math.round(Math.random() * 100) <= 50) {
+    currPlayer = 'Yellow';
+  } else {
+    currPlayer = 'Red';
+  }
+  // add class to coin based on above 50/50
+  if(currPlayer === 'Red'){
+    coin.classList.add('red-coin')
+  }else{
+    coin.classList.add('yellow-coin')
+  }
+  // delay showing results of flip until coin has flipped
+  setTimeout(()=>{
+    
+    coin.style.backgroundColor = currPlayer;
+    // this timeout is more to help visually and not functionality
+    setTimeout(()=> {coin.innerText = `${currPlayer} goes first!`;}, 800)
+    // remove coin flip that will have board for game underneath
+    setTimeout(()=>{
+      document.querySelector('#coin-container').style.display = 'none';
+    },3400)
+  },2300)
+}
+
+// add click to flip coin
+coin.addEventListener('click', flipCoin)
 
 // ability to choose size of game before it starts then remove choices and populate board into DOM
 
-small.addEventListener('click', (e)=>{
+small.addEventListener('click', (e) => {
   WIDTH = 6;
   HEIGHT = 5;
   makeBoard();
-makeHtmlBoard();
-newGame.style.display = 'block'
-e.target.parentElement.style.display ='none';
+  makeHtmlBoard();
+  // add new game button with coin on higher z-index
+  newGame.style.display = 'block'
+  coinContain.style.display = 'flex'
+  // remove size choice selection
+  e.target.parentElement.style.display = 'none';
 })
-medium.addEventListener('click', (e)=>{
+medium.addEventListener('click', (e) => {
   WIDTH = 8;
   HEIGHT = 7;
   makeBoard();
-makeHtmlBoard();
-newGame.style.display = 'block'
-e.target.parentElement.style.display ='none';
+  makeHtmlBoard();
+  newGame.style.display = 'block'
+  coinContain.style.display = 'flex'
+  e.target.parentElement.style.display = 'none';
 })
-large.addEventListener('click', (e)=>{
+large.addEventListener('click', (e) => {
   WIDTH = 10;
   HEIGHT = 9;
   makeBoard();
-makeHtmlBoard();
-newGame.style.display = 'block'
-e.target.parentElement.style.display ='none';
+  makeHtmlBoard();
+  newGame.style.display = 'block'
+  coinContain.style.display = 'flex'
+  e.target.parentElement.style.display = 'none';
 })
 
 
 
 
 
-let currPlayer = 'Red'; // active player: 1 or 2
+
 let board = []; // array of rows, each row is array of cells  (board[y][x])
 
 /** makeBoard: create in-JS board structure:
@@ -53,8 +97,8 @@ let board = []; // array of rows, each row is array of cells  (board[y][x])
  */
 
 const makeBoard = () => {
-  for(let y =0; y<HEIGHT; y++){
-    board.push(Array.from({length: WIDTH}))
+  for (let y = 0; y < HEIGHT; y++) {
+    board.push(Array.from({ length: WIDTH }))
   }
   // TODO: set "board" to empty HEIGHT x WIDTH matrix array
 }
@@ -109,14 +153,14 @@ const makeHtmlBoard = () => {
 
 const findSpotForCol = x => {
   // TODO: write the real version of this, rather than always returning 0
-    // start at bottom of column x that is selected and loop through entire column moving up to find highest empty spot
-    // if spot is empty return the y(row) at that cell, else return null
-  for(let y = HEIGHT-1; y>=0; y--){
+  // start at bottom of column x that is selected and loop through entire column moving up to find highest empty spot
+  // if spot is empty return the y(row) at that cell, else return null
+  for (let y = HEIGHT - 1; y >= 0; y--) {
     // if the cell at board (y,x) is falsy return the y so piece can be placed here
-    if(!board[y][x]){
+    if (!board[y][x]) {
       return y;
     }
-    
+
   }
   // if the cell is truthy return null to function to loop through next y
   return null;
@@ -140,7 +184,7 @@ const placeInTable = (y, x) => {
 
 /** endGame: announce game end */
 // TODO: pop up alert message
-  // insert msg from below into an alert message for game being finalized
+// insert msg from below into an alert message for game being finalized
 const endGame = msg => alert(msg);
 
 
@@ -169,13 +213,13 @@ const handleClick = evt => {
   // if check for win returns true then return winning message else do nothing
   if (checkForWin()) {
     // added timeout so board is filled before winning message appears
-    setTimeout(()=>{
+    setTimeout(() => {
       // since timeout will delay player will switch so revert back to previous player for message
       currPlayer = currPlayer === 'Red' ? 'Yellow' : 'Red';
       return endGame(`${currPlayer} player won!`);
-    },10)
-    
-    
+    }, 10)
+
+
   }
 
   // check for tie
@@ -184,10 +228,10 @@ const handleClick = evt => {
   const checkForTie = () => {
     board.every(row => row.every(cell => cell))
   }
-  if (checkForTie()){
+  if (checkForTie()) {
     return endGame('Tie Game! GAME OVER!')
   }
-  
+
 
   // switch players
   // set currPlayer to red or Yellow
@@ -198,7 +242,7 @@ const handleClick = evt => {
 
 /** checkForWin: check board cell-by-cell for "does a win start here?" */
 
-const checkForWin =() => {
+const checkForWin = () => {
   const _win = (cells) => {
     // Check four cells to see if they're all color of current player
     //  - cells: list of four (y, x) cells
@@ -215,8 +259,8 @@ const checkForWin =() => {
   }
 
   // TODO: read and understand this code. Add comments to help you.
-// loop through all rows and insid each row iteration loop through all columns
-// start loop for rows
+  // loop through all rows and insid each row iteration loop through all columns
+  // start loop for rows
   for (let y = 0; y < HEIGHT; y++) {
     // immediatelly loop through each column in the row
     for (let x = 0; x < WIDTH; x++) {

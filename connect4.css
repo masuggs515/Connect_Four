@@ -1,5 +1,8 @@
+
+
 body{
-  background-color: black;
+  background-color: rgb(8, 0, 54);
+  font-family: Arial, Helvetica, sans-serif;
 }
 /* header */
 h1{
@@ -95,7 +98,7 @@ h1{
   animation-name: drop;
 } 
 
-/* TODO: make pieces red/blue,  depending on player 1/2 piece */
+/* TODO: make pieces red/blue(chose yellow),  depending on player 1/2 piece */
 .playerRed{
   background-color: rgb(230, 27, 27);
 }
@@ -118,4 +121,57 @@ h1{
   cursor: pointer;
 }
 
+/* coin flip */
 
+#coin-container{
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  position: fixed;
+  top: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(17, 70, 170, 0.822);
+}
+
+#coin{
+  background-color: orange;
+  border: solid black 2px;
+  height: 40vh;
+  width: 40vh;
+  border-radius: 50%;
+  color: white;
+  font-size: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 800;
+}
+
+#coin:hover{
+  cursor: pointer;
+  
+}
+#coin:focus{
+  outline: none;
+}
+
+#coin.red-coin{
+  animation: flipCoin 3s ease-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#coin.yellow-coin{
+  animation: flipCoin 3s ease-out;
+  color: black;
+}
+
+@keyframes flipCoin{
+  from{
+    transform: rotateY(0)
+  }
+  to{
+    transform: rotateY(900deg);
+  }
+
+}
