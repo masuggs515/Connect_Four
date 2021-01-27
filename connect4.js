@@ -13,9 +13,12 @@ const gameSize = document.querySelector('#game-size');
 const newGame = document.querySelector('#new-game');
 const coin = document.querySelector('#coin');
 const coinContain = document.querySelector('#coin-container');
+const TIMEOUT_FOR_COIN_TEXT = 800;
+const TIMEOUT_FOR_COIN_COLOR = 3400;
+const TIMEOUT_TO_REMOVE_COIN = 2300;
 // initialize width and height so it can be changed with selections
 let WIDTH;
-let HEIGHT
+let HEIGHT;
 
 // Go back to start screen if in the middle of the game and allow to change size board
 newGame.addEventListener('click', () => location.reload())
@@ -26,63 +29,53 @@ const flipCoin = () => {
   coin.classList.add('flip');
   coin.innerText = '';
   // give 50/50 chance to be yellow or red
-  if (Math.round(Math.random() * 100) <= 50) {
-    currPlayer = 'Yellow';
-  } else {
-    currPlayer = 'Red';
-  }
-  // add class to coin based on above 50/50
-  if(currPlayer === 'Red'){
-    coin.classList.add('red-coin')
-  }else{
-    coin.classList.add('yellow-coin')
-  }
+  currPlayer = (Math.round(Math.random() * 100) <= 1) ? "Red" : "Yellow";
+
+  (currPlayer === 'Red') ? coin.classList.add('red-coin') : coin.classList.add('yellow-coin')
+  // {
+  //   coin.classList.add('red-coin')
+  // }else{
+  //   coin.classList.add('yellow-coin')
+  // }
   // delay showing results of flip until coin has flipped
-  setTimeout(()=>{
-    
+  setTimeout(() => {
+
     coin.style.backgroundColor = currPlayer;
     // this timeout is more to help visually and not functionality
-    setTimeout(()=> {coin.innerText = `${currPlayer} goes first!`;}, 800)
+    setTimeout(() => { coin.innerText = `${currPlayer} goes first!`; }, TIMEOUT_FOR_COIN_TEXT)
     // remove coin flip that will have board for game underneath
-    setTimeout(()=>{
+    setTimeout(() => {
       document.querySelector('#coin-container').style.display = 'none';
-    },3400)
-  },2300)
+    }, TIMEOUT_FOR_COIN_COLOR)
+  }, TIMEOUT_TO_REMOVE_COIN)
 }
 
 // add click to flip coin
 coin.addEventListener('click', flipCoin)
 
 // ability to choose size of game before it starts then remove choices and populate board into DOM
-
-small.addEventListener('click', (e) => {
-  WIDTH = 6;
-  HEIGHT = 5;
+const chooseBoardSize = (y, x) => {
+  WIDTH = y;
+  HEIGHT = x;
   makeBoard();
   makeHtmlBoard();
   // add new game button with coin on higher z-index
   newGame.style.display = 'block'
   coinContain.style.display = 'flex'
   // remove size choice selection
+}
+small.addEventListener('click', (e) => {
   e.target.parentElement.style.display = 'none';
-})
+  chooseBoardSize(6, 5);
+});
+
 medium.addEventListener('click', (e) => {
-  WIDTH = 8;
-  HEIGHT = 7;
-  makeBoard();
-  makeHtmlBoard();
-  newGame.style.display = 'block'
-  coinContain.style.display = 'flex'
   e.target.parentElement.style.display = 'none';
+  chooseBoardSize(8, 7);
 })
 large.addEventListener('click', (e) => {
-  WIDTH = 10;
-  HEIGHT = 9;
-  makeBoard();
-  makeHtmlBoard();
-  newGame.style.display = 'block'
-  coinContain.style.display = 'flex'
   e.target.parentElement.style.display = 'none';
+  chooseBoardSize(10, 9);
 })
 
 
